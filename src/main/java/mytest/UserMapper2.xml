@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+       Copyright ${license.git.copyrightYears} the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mytest.UserDao2">
+
+    <!--  缓存  flushInterval单位为毫秒-->
+    <cache eviction="LRU" flushInterval="60000" size="1024" readOnly="false"/>
+
+
+    <resultMap id="userMap" type="mytest.User">
+        <id property="id" column="id"/>
+        <result property="miId" column="mi_id"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        mi_id
+    </sql>
+
+    <select id="findUserByMiId" resultMap="userMap" parameterType="long" useCache="true">
+        select
+        <include refid="Base_Column_List"/>
+        from reader2_user t
+        where mi_id = #{miId}
+    </select>
+
+    <select id="findUserById" resultMap="userMap" parameterType="long" useCache="true">
+    select
+    <include refid="Base_Column_List"/>
+    from reader2_user t
+    where id &gt; #{id}
+    <if test="miId > 0">
+        and mi_id &gt; #{miId}
+    </if>
+</select>
+
+    <select id="findUserById2" resultMap="userMap" parameterType="long" useCache="true">
+        select *
+        from reader2_user t
+        where id = ${id}
+    </select>
+
+    <!--  <select id="findUserById2" resultType="mytest.User" parameterType="long"  useCache="true">
+        select t.user_id userId,
+          t.nick_name nickName,
+          t.phone phone
+          from zbacc_user_info t
+          where user_id = #{userId}
+      </select>
+
+
+       &lt;!&ndash; 条件查询用户列表 &ndash;&gt;
+          <select id="queryUserAccountInfos"  resultType="mytest.User"   flushCache="true" >
+        select t.user_id userId,
+          t.nick_name nickName,
+          t.phone phone
+          from zbacc_user_info t
+         where 1=1
+           <if test="userId != '' and userId != null">
+               and user_id = #{userId}
+           </if>
+           order by user_id desc
+      </select>
+
+      <delete id ="deleteUserInfo">
+      delete from zbacc_user_info t where t.user_id = #{103}
+      </delete>
+
+       <delete id ="updateUser">
+      update zbacc_user_info set nick_name = #{nickName}
+      where user_id = #{userId}
+      </delete>
+      -->
+</mapper>

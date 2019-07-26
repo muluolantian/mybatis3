@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+       Copyright ${license.git.copyrightYears} the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 1、mybatis使用properties来引入外部properties配置文件的内容
+    resource 引入类路径下资源
+    url 引入网络路径或磁盘路径下资源 -->
+    <properties resource="db.properties"></properties>
+
+    <!-- 2、settings包含很多重要的设置项
+         setting标识具体的设置项
+             name表示设置项的名字
+             value表示设置项的值 -->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="cacheEnabled" value="false"/>
+        <setting name="lazyLoadingEnabled" value="false"/>
+    </settings>
+
+    <!-- 3、typeAliases 为java类型起别名，别名不区分大小写
+          typeAlias 为某个具体的java类型取别名
+               type java类的全类名，默认别名就是类名小写
+               alias 自定义别名 -->
+    <typeAliases>
+        <typeAlias type="mytest.User" alias="user" />
+        <typeAlias type="java.lang.String" alias="str" />
+        <!-- package为某个包下面所有类批量起别名
+           name 表示包的名称 默认别名为类名小写
+           这里重复配置了Hotel类，复制的时候注掉一种配置-->
+        <package name="com.pjf.mybatis.po" />
+    </typeAliases>
+
+
+    <plugins>
+<!--        <plugin interceptor="se.spagettikod.optimist.impl.OptimisticLockingInterceptor">
+            <property name="mapper" value="se.spagettikod.optimist.impl.MySqlMapper"/>
+        </plugin>-->
+
+        <plugin interceptor="mytest.plugin.SqlMonitorManager">
+            <property name="sql_monitor" value="true"/>
+            <property name="sql_show" value="true"/>
+            <property name="overtime_print_error" value="300"/>
+        </plugin>
+    </plugins>
+
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <!-- 配置数据库连接信息 -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.name}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- mapping 文件路径配置 -->
+    <mappers>
+        <mapper resource="mytest/UserMapper2.xml"/>
+    </mappers>
+</configuration>
