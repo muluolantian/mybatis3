@@ -1,6 +1,5 @@
-
 /**
- *    Copyright ${license.git.copyrightYears} the original author or authors.
+ *    Copyright 2009-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -63,12 +62,12 @@ public class MyTest
         throws IOException, ClassNotFoundException
     {
         //StaticSqlSource DynamicSqlSource  XMLScriptBuilder IfSqlNode DefaultResultSetHandler
-        Class.forName("oracle.jdbc.driver.OracleDriver");
+        Class.forName("com.mysql.jdbc.Driver");
         /* 
          * 1.加载mybatis的配置文件，初始化mybatis，创建出SqlSessionFactory，是创建SqlSession的工厂 
          * 这里只是为了演示的需要，SqlSessionFactory临时创建出来，在实际的使用中，SqlSessionFactory只需要创建一次，当作单例来使用 
          */
-        InputStream inputStream = Resources.getResourceAsStream("mybatis-config.xml");
+        InputStream inputStream = Resources.class.getResourceAsStream("mybatis-config.xml");
         SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
         SqlSessionFactory factory = builder.build(inputStream);
         
